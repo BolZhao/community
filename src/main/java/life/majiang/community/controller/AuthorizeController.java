@@ -1,5 +1,6 @@
 package life.majiang.community.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import life.majiang.community.dto.AccessTokenDTO;
 import life.majiang.community.dto.GithubUser;
 import life.majiang.community.provider.GithubPeovider;
@@ -26,7 +27,8 @@ public class AuthorizeController {
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
-                           @RequestParam(name = "state") String state) throws IOException {
+                           @RequestParam(name = "state") String state,
+                           HttpServletRequest request) throws IOException {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(ClientID);
         accessTokenDTO.setCode(code);
@@ -35,8 +37,13 @@ public class AuthorizeController {
         accessTokenDTO.setClient_secret(ClientSecret);
         String token = githubPeovider.GetAccessToken(accessTokenDTO);
         GithubUser user = githubPeovider.getUser(token);
-
         System.out.println(user.toString());
-        return "hello";
+        if (user !=null){
+            request.getSession().setAttribute("user",user);
+            return "redirect:"; //如果不加redirect，就会只渲染，而地址不会变
+        }
+        else {
+            return "redirect:";
+        }
     }
 }
