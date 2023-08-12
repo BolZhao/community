@@ -4,14 +4,12 @@ import com.alibaba.fastjson.JSON;
 import life.majiang.community.dto.AccessTokenDTO;
 import life.majiang.community.dto.GithubUser;
 import okhttp3.*;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Component;
 
-import javax.security.sasl.AuthorizeCallback;
 import java.io.IOException;
 
 @Component
-public class GithubPeovider {
+public class GithubProvider {
     public String GetAccessToken(AccessTokenDTO accessTokenDTO) throws IOException {
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
