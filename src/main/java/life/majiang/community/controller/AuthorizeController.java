@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
@@ -21,8 +22,8 @@ public class AuthorizeController {
     private GithubProvider githubProvider;
     @Autowired
     GithubUser githubUser;
-    @Autowired
-    CommunityUser communityUser;
+
+
     @Autowired
     CommunityUserMapper communityUserMapper;
     @Value("${github.client.id}")
@@ -45,8 +46,19 @@ public class AuthorizeController {
         String token = githubProvider.GetAccessToken(accessTokenDTO);
         GithubUser user = githubProvider.getUser(token);
         System.out.println(user.toString());
+        CommunityUser communityUser = new CommunityUser(
+                198,
+                String.valueOf(user.getId()),
+                user.getName(),
+                UUID.randomUUID().toString(),
+                100L,
+                100L
+        );
+        communityUserMapper.insert(communityUser);
         List<CommunityUser> userList = communityUserMapper.show();
-
+        for (CommunityUser u : userList) {
+            System.out.println(u);
+        }
         if (user !=null){
             request.getSession().setAttribute("user",user);
             return "redirect:"; //如果不加redirect，就会只渲染，而地址不会变
